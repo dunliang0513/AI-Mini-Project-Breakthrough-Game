@@ -1,0 +1,1045 @@
+---
+jupyter:
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .py
+    mimetype: text/x-python
+    name: python
+    nbconvert_exporter: python
+    pygments_lexer: ipython3
+    version: 3.9.12
+  nbformat: 4
+  nbformat_minor: 2
+  vscode:
+    interpreter:
+      hash: b0fa6594d8f4cbf19f97940f81e996739fb7646882a419484c72d19e05852a7e
+---
+
+::: {.cell .markdown}
+# Mini Project: Breakthrough Game
+
+**Release Date:** 9 September 2022
+
+**Due Date:** 23:59, 15 October 2022
+:::
+
+::: {.cell .markdown}
+## Overview
+
+**Breakthrough** was the winner of the 2001 8 × 8 Game Design
+Competition, sponsored by *About.com* and *Abstract Games Magazine*.
+When Dan Troyka formulated it, it was originally for a 7×7 board. We're
+going to play it on a 6×6 board to limit the complexity. In terms of our
+terminology for the agent environment, Breakthrough is a fully
+observable, strategic, deterministic game. The game always results in a
+win for one of the two players. So what are you going to do? You are
+going to play the game of Breakthrough -- not as yourself but through
+the surrogate of your program.
+
+How exactly do you code an AI to play this game? Well, like everything
+else in this course, we code an agent. An agent takes sensory input and
+reasons about it, and then outputs an action at each time step. You thus
+need to create a program that can read in a representation of the board
+(that's the input) and output a legal move in Breakthrough. You then
+need a evaluation function to evaluate how good a board is to your
+agent. The better your evaluation function, the better your agent will
+be at picking good moves. You need to put some thought into the
+structure of your evaluation function.
+
+Aside from the evaluation function, you also need to decide a strategy
+for exploring the search space. Certainly you can use minimax search but
+you may want to decide whether you want to use alpha-beta pruning on top
+of this. You would want to make the best move that you can given the
+limited time for each move (further provided clarification below).
+
+**Required Files**:
+
+-   template.py: contains code for playing breakthrough between two
+    different game playing agents. Your minimax algorithm will be
+    written in this file.
+-   utils.py: contains some utility functions that can be used directly.
+
+**Honour Code**: Note that plagiarism will not be condoned! You may
+discuss with your classmates and check the internet for references, but
+you MUST NOT submit code/report that is copied directly from other
+sources!
+:::
+
+::: {.cell .markdown}
+## Breakthrough Technical Description
+
+```{=html}
+<pre>
+<p style="text-align: center;">
+<img src = 'imgs/breakthrough_board.png'>
+Figure 1. Game Board
+</p>
+</pre>
+```
+Figure 1 shows our typical game board. Black (**B**) wins by moving one
+piece to the opposite side, row index 5. White (**W**) wins by moving
+one piece to row index 0. Kindly **follow the same indexing as provided
+in *Figure 1*, and write code only for moving Black**. A simple board
+inversion will make black's code work seamlessly for white as well. This
+technique has been used in the game playing framework of *template.py*
+for managing this two player game (the `invert_board` function is
+provided in *util.py*).
+
+```{=html}
+<pre>
+<p style="text-align: center;">
+<img src = 'imgs/game_move.png'>
+Figure 2. Possible Moves
+</p>
+</pre>
+```
+Pieces move one space directly forward or diagonally forward, and only
+capture diagonally forward. The possible moves have been illustrated in
+*Figure 2*. In this figure, the black pawn at (3, 2) can go to any of
+the three spaces indicated forward. The black pawn at (0,4) can either
+choose to move by going diagonally right or capture by going diagonally
+left. It cannot move or capture by moving forward; its forward move is
+blocked by the white pawn. Note that your move is not allowed to take
+your pawn outside the board.
+
+Your program will always play **black**, whose objective is to move a
+black pawn to row index 5. Given a move request, your agent should
+output a pair of coordinates in the form of a pair of one dimensional
+lists using the coordinate system shown in the figure. For example, for
+moving the black pawn standing at (0,4) in *Figure 2* to (1,3), your
+agent should make a move that returns the two lists: \[0, 4\] and \[1,
+3\].
+
+Your agent should always provide a legal move. Moves will be validated
+by the game playing framework provided in *template.py*. Any illegal
+moves will result in a decrease in the score of your assignment. If your
+player makes an illegal move, the competition framework will choose the
+next available valid move on your behalf. Your agent must always make a
+move; it is not allowed to skip moves. Your program *cannot take more
+than 3 real-time seconds* to make a move. If your program does not
+output a coordinate within 3 seconds, it will decrease your assignment
+score further and the competition framework will choose a random move on
+your behalf.
+:::
+
+::: {.cell .markdown}
+## Submission Details
+
+1.  You will need to submit your code written for `make_move()` function
+    of `PlayerAI` class (see *template.py*) in Coursemology --- you will
+    have to write your minimax algorithm with alpha beta pruning here.
+    This function takes the board configuration as its parameter and
+    should return the move to be made by utilizing your designed game
+    playing algorithm based on alpha beta pruning (you are allowed to
+    write as many assisting function as you want). The board
+    configuration is passed as the parameter of the function in the form
+    of a two dimensional list of size 6 × 6 (initially, board
+    configuration will look like *Game Board in Figure 1*). It is
+    represented as a 2D list containing three types of characters: (1)
+    `"W"` for denoting white pawns, (2) `"B"` for denoting black pawns,
+    and (3) `"_"` for denoting empty cells. The move to be made has to
+    be returned in the form of two lists (source position of move,
+    destination position of move). For example, if your function returns
+    \[0,4\], \[1,3\], that means the black pawn will move from position
+    \[0,4\] to \[1,3\].
+
+2.  Apart from your code implementation, you should also wrote a report
+    to let us know the thought process behind your solution. Take this
+    opportunity to convince your grader that you have understood the
+    concepts taught in class and are able to apply it. Your response
+    should include any information you want the grader to know about
+    your submission (see text response question in coursemology). This
+    includes, but is not limited to, descriptions of:
+    `<ol style="list-style-type: lower-alpha">`{=html} `<li>`{=html}your
+    algorithms implemented,`</li>`{=html} `<li>`{=html}your data
+    structures used,`</li>`{=html} `<li>`{=html}your evaluation
+    function(s)`</li>`{=html} `</ol>`{=html} Your grader should be able
+    to understand everything about your solution from reading this
+    response. That said, your code will also be analyzed for correctness
+    and consistency. Note that `<strong>`{=html}the report is expected
+    to be (on average) 2-3 pages worth of report on an A4 word
+    document`</strong>`{=html}.
+
+This mini-project is a journey and not just a destination. Our hope is
+that you will try out different things to make your agent better.
+Instead of only documenting your final solution, you would also be given
+credit for describing the approaches that did not quite work.
+
+It is okay to try something and fail. The key is to understand why.
+:::
+
+::: {.cell .markdown}
+## Provided Utility Functions
+
+You can use the functions provided in *util.py* file as you see fit.
+These functions have mainly been used by the game playing framework in
+*template.py* to facilitate the two player game. A short description of
+these functions is given below:
+
+-   `generate_init_state()`: It generates initial state (*Game Board in
+    Figure 1*) at the start of the game.
+-   `print_state(board)`: It takes in the board 2D list as parameter and
+    prints out the current state of the board in a convenient way
+    (sample shown in *Possible Moves in Figure 2*).
+-   `is_game_over(board)`: Given a board configuration, it returns
+    `True` if the game is over, `False` otherwise.
+-   `is_valid_move(board, src, dst)`: It takes in the board
+    configuration and the move source and move destination as its
+    parameters. It returns `True` if the move is valid and returns
+    `False` if the move is invalid.
+-   `state_change(board, src, dst)`: Given a board configuration and a
+    move source and move destination, this function changes board
+    configuration in accordance to the indicated move.
+-   generate_rand_move(board): It takes in the board configuration as
+    its parameter and generates an arbitrary valid move in the form of
+    two lists. You likely won't need to use this function. This function
+    is used by the game playing framework in one of two cases - (1) an
+    invalid move has been made by the game playing agent or, (2) the
+    game playing agent has taken more than 3 seconds to make its move.
+-   `invert_board(board)`: It takes in the board 2D list as parameter
+    and returns the inverted board. You should always code for black,
+    not for white. The game playing agent in *main.py* has to make move
+    for both black and white using only black's code. So, when it is
+    time for white to make its move, we invert the board using this
+    function to see everything from white side's perspective (done by
+    inverting the colors of each pawn and by modifying the row indices).
+    An example of inversion has been shown in *Figure 3 Board Inversion
+    Illustration* later. In your minimax algorithm, you need to consider
+    both black and white alternatively. Instead of writing the same code
+    twice separately for black and white, you can use `invert_board()`
+    function to invert your board configuration that enables you to
+    utilize black's codes for white pawns as well. That is enough for
+    hints, I guess.
+:::
+
+::: {.cell .markdown}
+## Testing Your Game Playing Agent
+
+Fill in `make_move(board)` method of the `PlayerAI` class with your game
+playing agent code (you can write as many assisting function as you deem
+fit). The `PlayerNaive` class has been provided for you to test out your
+agent against another program. Always code for Black (assume Black as
+max player) in both these class functions. The game playing framework
+calls the `make_move(board)` method of each agent alternatively. After
+you complete `PlayerAI`, simply run the *template.py* file. You will see
+the two agents (`PlayerAI` and `PlayerNaive`) playing against each
+other.
+
+**Always remember to return your move within 3 seconds.** You should
+check for time passed during every recursive call in minimax algorithm
+to follow this 3 second rule. Whenever you see that 3 seconds is almost
+over, immediately return the best move you have at your disposal. That
+is all the hint I can give you. This is really important because the
+machine where we will run your code maybe much slower than your local
+machine.
+
+```{=html}
+<pre>
+<p style="text-align: center;">
+<img src = 'imgs/invert_board.png'>
+Figure 3. Board Inversion Illustration
+</p>
+</pre>
+```
+You have chance to be innovative mainly in 3 areas - (1) the evaluation
+function used to evaluate the goodness of a state, (2) effective
+exploration strategy maintaining the time constraint and (3) modifying
+the alpha beta pruning algorithm for more efficient search. Ultimately,
+we shall be playing all the student designed agents against each other.
+So, it will be a small breakthrough tournament. The top players will get
+some bonus marks.
+:::
+
+::: {.cell .markdown}
+## Grading Guidelines
+
+This mini-project will constitute 10% of your overall grade for CS2109S.
+The following is the criteria under which your submission will be
+graded.
+
+Your code will constitute 60% of this mini-project grade. We look for:
+
+-   **Making Valid Moves (5%)**: Ensure your moves are valid and
+    complete every move within 3 seconds to get full marks for this
+    section.
+-   **Performance Against Baseline Agent (15%)**: Your submitted agent
+    code will be run against our baby agent and a base agent. You should
+    win all our agents and make less than or equal to 3 random moves to
+    get the full credit for this section.
+-   **Algorithm Implementation Check (30%)**: If you implement the
+    minimax algorithms and the alpha beta correctly, you receive these
+    marks irrespective of the performance of your agent.
+-   **Evaluation Function Check (10%)**: Remember this is a zero-sum
+    game, so your evaluation function should maximize your probability
+    of winning while minimize other player\'s chance of winning.
+
+Your report will constitute 40% of this mini-project grade. We look for:
+
+-   **Data Structure Description (5%)**: Describe your data structure
+    and how it describes the game state fully. Specify explicitly how
+    the initial state, and some goal state is represented using your
+    data structure.
+-   **Evaluation Function Description (10%)**: Explain how your
+    evaluation function works too!
+-   **Novel solution (25%)**: This is the part where we give even more
+    credits to your well-designed submissions. To give some examples, in
+    the novel solution section we look for:
+    `<ol style="list-style-type: lower-alpha">`{=html} `<li>`{=html}any
+    good data structures that increase the efficiency. Think about how
+    slow and memory consuming it is to use 2D list of strings to
+    represent the board, not to mention we need to keep flipping. Come
+    up with good data structures to possibly speed up board access and
+    score computation. Some examples of good structure are hash table
+    with well-defined hashing method, bit representation of game state
+    etc.`</li>`{=html} `<li>`{=html}any good ways of performing search
+    space exploration. Remember we have time limit for each move, and
+    it\'s not possible to look at all future states before making a
+    decision. Could you think of a better way to search to get the best
+    possible move within the time limit? Could you think of ways to
+    improve your pruning, by possibly adopting a good order of
+    pruning?`</li>`{=html} `<li>`{=html}any good evaluation functions.
+    You are encouraged to play the game yourself, and/or read some
+    research papers to know the game better and discover any good
+    strategies that can help you improve your evaluation function. Some
+    possible directions you can consider are considering the
+    neighborhood and prioritizing some pieces, and putting different
+    weights on several heuristics.`</li>`{=html} `</ol>`{=html} Note
+    that none of the list above is exhaustive. Feel free to come up with
+    other creative ways to improve your program. You are also encouraged
+    to read research papers and implement some of the algorithms.
+
+Try your best and enjoy!
+:::
+
+::: {.cell .code execution_count="2"}
+``` python
+
+"""
+Make sure to import utils.py provided before proceeding
+"""
+
+
+import utils
+```
+:::
+
+::: {.cell .markdown}
+### Task 1: Make Valid Move Given a Board Representation
+
+Input: A board state represented as a 2D list
+
+Output: two 1D lists representing source and destination of your move
+
+Note: Your move has to be valid and it has to be made within 3 seconds
+:::
+
+::: {.cell .code execution_count="4"}
+``` python
+import time
+
+class PlayerAI:
+    def make_move(self, board):
+        '''
+        This is the function that will be called from main.py
+        Your function should implement a minimax algorithm with 
+        alpha beta pruning to select the appropriate move based 
+        on the input board state. Play for black.
+
+        Parameters
+        ----------
+        self: object instance itself, passed in automatically by Python
+        board: 2D list-of-lists
+        Contains characters 'B', 'W', and '_' representing
+        Black pawns, White pawns and empty cells respectively
+        
+        Returns
+        -------
+        Two lists of coordinates [row_index, col_index]
+        The first list contains the source position of the Black pawn 
+        to be moved, the second list contains the destination position
+        '''
+        
+        ################
+        # Starter code #
+        ################
+        # TODO: Replace starter code with your AI
+        for r in range(len(board)):
+            for c in range(len(board[r])):
+                # check if B can move forward directly
+                if board[r][c] == 'B' and board[r+1][c] == '_':
+                    src = [r, c]
+                    dst = [r+1, c]
+                    return src, dst # valid move
+        return [0, 0], [0, 0] # invalid move
+
+class PlayerNaive:
+    ''' A naive agent that will always return the first available valid move '''
+    def make_move(self, board):
+        return utils.generate_rand_move(board)
+
+# You may replace PLAYERS with any two players of your choice
+PLAYERS = [PlayerAI(), PlayerNaive()]
+COLOURS = [BLACK, WHITE] = 'Black', 'White'
+TIMEOUT = 3.0
+
+##########################
+# Game playing framework #
+##########################
+if __name__ == "__main__":
+
+    print("Initial State")
+    board = utils.generate_init_state()
+    utils.print_state(board)
+    move = 0
+
+    # game starts
+    while not utils.is_game_over(board):
+        player = PLAYERS[move % 2]
+        colour = COLOURS[move % 2]
+        if colour == WHITE: # invert if white
+            utils.invert_board(board)
+        start = time.time()
+        src, dst = player.make_move(board) # returns [i1, j1], [i2, j2] -> pawn moves from position [i1, j1] to [i2, j2]
+        end = time.time()
+        within_time = end - start <= TIMEOUT
+        valid = utils.is_valid_move(board, src, dst) # checks if move is valid
+        if not valid or not within_time: # if move is invalid or time is exceeded, then we give a random move
+            print('executing random move')
+            src, dst = utils.generate_rand_move(board)
+        utils.state_change(board, src, dst) # makes the move effective on the board
+        if colour == WHITE: # invert back if white
+            utils.invert_board(board)
+
+        print(f'Move No: {move} by {colour}')
+        utils.print_state(board) # printing the current configuration of the board after making move
+        move += 1
+    print(f'{colour} Won')
+```
+
+::: {.output .stream .stdout}
+    Initial State
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 0 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 1 by White
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 2 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 3 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 4 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 5 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 6 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 7 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 8 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 9 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 10 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 11 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 12 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 13 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 14 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 15 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 16 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 17 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 18 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 19 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 20 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 21 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 22 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 23 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    executing random move
+    Move No: 24 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  B  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 25 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 26 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 27 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 28 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 29 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    executing random move
+    Move No: 30 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 31 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  W  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    executing random move
+    Move No: 32 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  W  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 33 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  W  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    executing random move
+    Move No: 34 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  B  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  W  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 35 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 36 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  B  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |  W  |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 37 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 38 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  B  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |  W  |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 39 by White
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Move No: 40 by Black
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |     |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |  W  |  W  |  W  |  B  |  B  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |     |     |     |  W  |  W  |  W  |
+    +-----+-----+-----+-----+-----+-----+
+    |  B  |     |     |     |     |     |
+    +-----+-----+-----+-----+-----+-----+
+    Black Won
+:::
+:::
+
+::: {.cell .markdown}
+### Task 2: Report
+
+Describe your implemented algorithm, data structure, evaluation function
+and any other information that you want the grader to know about. Write
+your response in the coursemology textbox, or paste it there after you
+are done writing.
+:::
+
+::: {.cell .markdown}
+# Submission
+
+Once you are done, please submit your work to Coursemology, by copying
+the right snippets of code into the corresponding box that says \'Your
+answer\', and click \'Save\'. After you save, you can make changes to
+your submission.
+
+Once you are satisfied with what you have uploaded, click \'Finalize
+submission.\' **Note that once your submission is finalized, it is
+considered to be submitted for grading and cannot be changed**. If you
+need to undo this action, you will have to email your assigned tutor for
+help. Please do not finalize your submission until you are sure that you
+want to submit your solutions for grading.
+:::
